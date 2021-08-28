@@ -1,0 +1,10 @@
+{
+    "help": {
+        "title" : "Command help",
+        "header" : "Command prefixes : `!t `\n",
+        "fields" : {
+            "Empty" : ["`Empty`"]
+        },
+        "footer": ""
+    }
+}

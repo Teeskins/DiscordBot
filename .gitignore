@@ -1,0 +1,17 @@
+# SVG
+*.svg
+
+# Python cache
+__pycache__
+
+# VSCode
+.vscode
+
+# env
+json/env.json
+
+# tests
+tests
+
+# quick todo list
+todo
