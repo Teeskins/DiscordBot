@@ -2,3 +2,4 @@ requests
 pandas
 Pillow
 discord.py
+wget

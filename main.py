@@ -6,6 +6,7 @@ from utils.utilities import read_json
 
 extensions: List[str] = [
     "cogs.resolve",
+    "cogs.download",
     "cogs.help"
 ]
 

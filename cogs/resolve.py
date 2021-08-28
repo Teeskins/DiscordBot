@@ -13,12 +13,15 @@ REACTION: json = read_json("json/reaction.json")
 
 def get_api(endpoint: str, value: str) -> List[dict]:
     r: object = requests.get(url=f"{endpoint}/{value}")
+    if (r.status_code != 200):
+        return []
     return (r.json())
  
 def is_list_in_list(l1: list, l2: list) -> bool:
     return (all(x in l1 for x in l2))
 
 def format_search(data: List[dict], *columns: List[str]) -> dict:
+    # data[0] because we suppose its a list where every element has the same pattern
     if (not is_list_in_list(list(data[0].keys()), columns)):
         return ({"Didnt": ["found"]})
     ret: dict = {k: [] for k in columns}
@@ -33,7 +36,7 @@ def group_list(arr: list, size: int) -> list:
 @dataclass
 class Page:
     """Structure used to store clients"""
-    msg: object
+    msg: commands.Context
     author_id: int
     data: List[List[str]]
     page: int
@@ -49,14 +52,14 @@ class Resolve(commands.Cog):
         """Go to previous or next page"""
         if (str(r_dst) != r_src): return
         if (not msg_id in list(self.pages.keys())): return
-        
+
         obj: Page = self.pages[msg_id]
         if (obj.author_id != user.id or obj._type != "resolve"): return
 
         # Check out of range
         if (obj.page + move < 0 or obj.page + move > len(obj.data) - 1):
             return
-        
+
         # Change page
         obj.page += move
 
@@ -81,7 +84,7 @@ class Resolve(commands.Cog):
         await reaction.remove(user)
     
     @commands.Cog.listener()
-    async def on_message(self, message: object):
+    async def on_message(self, message: commands.Context):
         #await self.bot.process_commands(message)
         pass
 
