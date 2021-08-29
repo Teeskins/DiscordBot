@@ -14,7 +14,6 @@ ENV: json = read_json("json/env.json")
 bot = commands.Bot(command_prefix = ['!t '])
 bot.remove_command("help")
 
-
 @bot.event
 async def on_ready() -> None:
     await bot.change_presence(activity=discord.Game(name="skins.tw"))
