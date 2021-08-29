@@ -14,6 +14,11 @@ ENV: json = read_json("json/env.json")
 bot = commands.Bot(command_prefix = ['!t '])
 bot.remove_command("help")
 
+
+@bot.event
+async def on_ready() -> None:
+    await bot.change_presence(activity=discord.Game(name="skins.tw"))
+
 def load_extensions(bot: Any, extensions: List[str]) -> None:
     for extension in extensions:
         bot.load_extension(extension)
