@@ -19,7 +19,8 @@ class Download(commands.Cog):
     @commands.command()
     async def load(self, ctx: commands.Context, _id: str = None):
         if (not _id): return
-        if (not (res := get_api(f"{ENV['api']}/api/asset", _id))):
+        res: List[dict] = get_api(f"{ENV['api']}/search", _id)
+        if (not res):
             return await bmessage(ctx, f"❌ cannot find assets with the id `{_id}`")
         
         tmp: str = res["name"] + ".png"
