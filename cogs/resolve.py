@@ -91,7 +91,8 @@ class Resolve(commands.Cog):
     @commands.command()
     async def find(self, ctx: commands.Context, name: str = None):
         if (not name): return
-        if (not (res := get_api(f"{ENV['api']}/search", name))):
+        res: List[dict] = get_api(f"{ENV['api']}/search", name)
+        if (not res):
             return await bmessage(ctx, f"❌ cannot find assets with the name `{name}`")
 
         frame: str = pd.DataFrame(format_search(res, "id", "name", "type", "author")).to_string(index=False)
