@@ -89,12 +89,12 @@ class Resolve(commands.Cog):
         pass
 
     @commands.command()
-    async def resolve(self, ctx: commands.Context, name: str = None):
+    async def find(self, ctx: commands.Context, name: str = None):
         if (not name): return
         if (not (res := get_api(f"{ENV['api']}/search", name))):
             return await bmessage(ctx, f"❌ cannot find assets with the name `{name}`")
 
-        frame: str = pd.DataFrame(format_search(res, "id", "type", "author")).to_string(index=False)
+        frame: str = pd.DataFrame(format_search(res, "id", "name", "type", "author")).to_string(index=False)
         pages: List[List[str]] = group_list(frame.split('\n'), 10)
         embed: object = discord.Embed(
             title=name, 

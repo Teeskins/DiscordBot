@@ -1,7 +1,7 @@
 from os import read
 from typing import *
 
-import discord, uuid, json, requests, os
+import discord, json, requests, os
 import pandas as pd
 from discord.ext import commands
 from dataclasses import dataclass
@@ -22,7 +22,7 @@ class Download(commands.Cog):
         if (not (res := get_api(f"{ENV['api']}/api/asset", _id))):
             return await bmessage(ctx, f"❌ cannot find assets with the id `{_id}`")
         
-        tmp: str = str(uuid.uuid1()) + ".png"
+        tmp: str = res["name"] + ".png"
         r: object = requests.get(f"{ENV['api']}{res['path']}")
 
         if (res["type"] == "skin"):
