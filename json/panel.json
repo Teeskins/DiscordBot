@@ -3,7 +3,7 @@
         "title" : "Command help",
         "header" : "Command prefixes : `!t `\n",
         "fields" : {
-            "Empty" : ["`Empty`"]
+            "Skins" : ["`find` <name: str>", "`load` <id: int>"]
         },
         "footer": ""
     }
