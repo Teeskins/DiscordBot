@@ -6,8 +6,7 @@ from discord.ext import commands
 from utils.utilities import bmessage
 
 secure_msg: str = """Secure channel, only you and administrators can see this channel\n \
-This channel will be deleted automatically in 60 seconds\n \
-All your messages will be deleted from this channel by the bot"""
+This channel will be deleted automatically in 60 seconds"""
 
 class Token(commands.Cog):
     """Security to enter your token"""
@@ -34,8 +33,9 @@ class Token(commands.Cog):
         }
         channel: object = await ctx.guild.create_text_channel(
             str(uuid.uuid1()), overwrites = overwrites)
-        await bmessage(channel, secure_msg)
+        await bmessage(channel, secure_msg, "Common usage of this channel: !t role <token>")
         await channel.send(ctx.author.mention)
+        await bmessage(ctx, f"🔐 Secret channel {channel.mention}")
         self._id.append(key)
         asyncio.create_task(self.delete(key, channel.id))
 
