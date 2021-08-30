@@ -4,11 +4,12 @@ import discord, asyncio, json
 
 from utils.utilities import read_json
 
-extensions: List[str] = [
+extensions: Tuple[str] = (
     "cogs.resolve",
     "cogs.download",
+    "cogs.role",
     "cogs.help"
-]
+)
 
 ENV: json = read_json("json/env.json")
 bot = commands.Bot(command_prefix = ['!t '])

@@ -1,0 +1,14 @@
+{
+    "Contributor": {
+        "value": 1
+    },
+    "Supporter": {
+        "value": 10
+    },
+    "Legend": {
+        "value": 50
+    },
+    "Master": {
+        "value": 100
+    }
+}

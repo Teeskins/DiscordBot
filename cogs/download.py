@@ -1,10 +1,8 @@
 from os import read
 from typing import *
 
-import discord, json, requests, os
-import pandas as pd
+import discord, json, requests, os, random
 from discord.ext import commands
-from dataclasses import dataclass
 
 from cogs.resolve import get_api
 from utils.utilities import read_json, bmessage
@@ -37,5 +35,13 @@ class Download(commands.Cog):
         embed.set_thumbnail(url=res["uploaded_by"]["profile_photo_url"])
         await ctx.send(embed=embed)
         
+    @commands.command(aliases=["random"])
+    async def _random(self, ctx: commands.Context, category: str = None):
+        if (not category): return
+        res: List[dict] = get_api(f"{ENV['api']}/api/assets/{category}", 0)
+        if (not res):
+            return await bmessage(ctx, f"❌ category `{category}` doesnt exist")
+        await self.load(ctx, random.choice(res)["id"])
+
 def setup(bot: commands.Bot):
     bot.add_cog(Download(bot))

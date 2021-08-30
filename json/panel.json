@@ -3,7 +3,9 @@
         "title" : "Command help",
         "header" : "Command prefixes : `!t `\n",
         "fields" : {
-            "Skins" : ["`find` <name: str>", "`load` <id: int>"]
+            "Skin" : ["`find` <name: str>", "`load` <id: int>", "`random` <category: str>"],
+            "Role" : ["`role` <token: str>"],
+            "Admin" : ["`init`"]
         },
         "footer": ""
     }
