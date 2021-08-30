@@ -43,14 +43,10 @@ class Page:
     _type: str
 
 class Pages:
-    pass
-
-class Resolve(commands.Cog, Pages):
-    """It resolves names from the REST API and stores msgs"""
-    def __init__(self, bot: commands.Bot):
+    """Class that manage Page objects"""
+    def __init__(self) -> None:
         self.pages: Dict[int, Page] = {}
-        self.bot = bot
-
+    
     async def change_page(self, r_dst: object, msg_id: str, r_src: str, move: int, user: object):
         """Go to previous or next page"""
         if (str(r_dst) != r_src): return
@@ -78,6 +74,12 @@ class Resolve(commands.Cog, Pages):
     
         await self.change_page(reaction, _id, REACTION["pages"]["previous"], -1, user)
         await self.change_page(reaction, _id, REACTION["pages"]["next"], 1, user)
+
+class Resolve(commands.Cog, Pages):
+    """It resolves names from the REST API and stores msgs"""
+    def __init__(self, bot: commands.Bot):
+        Pages.__init__(self)
+        self.bot = bot
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: object, user: object):
