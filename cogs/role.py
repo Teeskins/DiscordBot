@@ -13,9 +13,11 @@ ENV: json = read_json("json/env.json")
 
 class Roles(commands.Cog):
     """Manage role add and update"""
+
     @commands.has_permissions(administrator=True)
     @commands.command()
     async def init(self, ctx: commands.Context):
+        """Creates role if needed"""
         roles_names: List[str] = [a.name for a in ctx.guild.roles]
         if (all(x in roles_names for x in ROLE.keys())):
             return await bmessage(ctx, "❌ Roles have already been created")
@@ -25,6 +27,7 @@ class Roles(commands.Cog):
 
     @commands.command()
     async def role(self, ctx: commands.Context, token: str = None):
+        """Give role in function of upload_count"""
         if (not token): return
         await ctx.message.delete()
         res: List[dict] = get_api(f"{ENV['api']}/api/discord", token)

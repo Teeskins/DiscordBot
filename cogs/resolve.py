@@ -77,6 +77,7 @@ class Pages:
 
 class Resolve(commands.Cog, Pages):
     """It resolves names from the REST API and stores msgs"""
+
     def __init__(self, bot: commands.Bot):
         Pages.__init__(self)
         self.bot = bot
@@ -90,6 +91,7 @@ class Resolve(commands.Cog, Pages):
 
     @commands.command()
     async def find(self, ctx: commands.Context, name: str = None):
+        """Displays asset found with the keyword 'name'"""
         if (not name): return
         res: List[dict] = get_api(f"{ENV['api']}/search", name)
         if (not res):

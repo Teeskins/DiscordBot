@@ -11,11 +11,13 @@ ENV: json = read_json("json/env.json")
 
 class Download(commands.Cog):
     """It manages download"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.command()
     async def load(self, ctx: commands.Context, _id: str = None):
+        """Displays an asset"""
         if (not _id): return
         res: List[dict] = get_api(f"{ENV['api']}/api/asset", _id)
         if (not res):
@@ -37,6 +39,7 @@ class Download(commands.Cog):
         
     @commands.command(aliases=["random"])
     async def _random(self, ctx: commands.Context, category: str = None):
+        """Displays a random asset"""
         if (not category): return
         res: List[dict] = get_api(f"{ENV['api']}/api/assets/{category}", 0)
         if (not res):

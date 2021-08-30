@@ -10,6 +10,7 @@ This channel will be deleted automatically in 60 seconds"""
 
 class Token(commands.Cog):
     """Security to enter your token"""
+
     def __init__(self, bot: commands.Bot) -> None:
         self.bot: commands.Bot = bot
         self._id: List[str] = []

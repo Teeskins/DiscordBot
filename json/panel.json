@@ -5,7 +5,7 @@
         "fields" : {
             "Skin" : ["`find` <name: str>", "`load` <id: int>", "`random` <category: str>"],
             "Role" : ["`login`", "`role` <token: str>"],
-            "Admin" : ["`init`"]
+            "Admin" : ["`init`", "`clear` [amount: int]"]
         },
         "footer": ""
     }
