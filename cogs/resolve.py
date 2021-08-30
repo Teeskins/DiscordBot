@@ -42,7 +42,10 @@ class Page:
     page: int
     _type: str
 
-class Resolve(commands.Cog):
+class Pages:
+    pass
+
+class Resolve(commands.Cog, Pages):
     """It resolves names from the REST API and stores msgs"""
     def __init__(self, bot: commands.Bot):
         self.pages: Dict[int, Page] = {}
@@ -82,11 +85,6 @@ class Resolve(commands.Cog):
             return
         await self.check_for_pages(reaction, user)
         await reaction.remove(user)
-    
-    @commands.Cog.listener()
-    async def on_message(self, message: commands.Context):
-        #await self.bot.process_commands(message)
-        pass
 
     @commands.command()
     async def find(self, ctx: commands.Context, name: str = None):
@@ -98,9 +96,9 @@ class Resolve(commands.Cog):
         frame: str = pd.DataFrame(format_search(res, "id", "name", "type", "author")).to_string(index=False)
         pages: List[List[str]] = group_list(frame.split('\n'), 10)
         embed: object = discord.Embed(
-            title=name, 
-            color = 0x000000, 
-            description="```" + '\n'.join(pages[0]) + "```"
+            title       = name, 
+            color       = 0x000000, 
+            description = "```" + '\n'.join(pages[0]) + "```"
         )
         embed.set_footer(text=f"page 1 / {len(pages)}")
         msg: object = await ctx.send(embed=embed)

@@ -6,8 +6,10 @@ import discord, json
 from discord.ext import commands
 
 from utils.utilities import bmessage, read_json
+from cogs.resolve import get_api
 
 ROLE: json = read_json("json/role.json")
+ENV: json = read_json("json/env.json")
 
 class Roles(commands.Cog):
     """Manage role add and update"""
@@ -24,7 +26,13 @@ class Roles(commands.Cog):
     @commands.command()
     async def role(self, ctx: commands.Context, token: str = None):
         if (not token): return
-        pass
+        await ctx.message.delete()
+        res: List[dict] = get_api(f"{ENV['api']}/api/discord", token)
+        if (not res):
+            return await bmessage(ctx, f"❌ cannot find the user with the token `{token}`")
+        for k in list(ROLE.keys())[::-1]:
+            if (res["count_uploads"] >= ROLE[k]["value"] and k in [x.name for x in ctx.guild.roles]):
+                return await ctx.message.author.add_roles(discord.utils.get(ctx.guild.roles, name = k))
 
 def setup(bot: commands.Bot):
     bot.add_cog(Roles())

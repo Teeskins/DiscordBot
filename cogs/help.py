@@ -11,6 +11,5 @@ class Help(commands.Cog):
     @commands.command()
     async def help(self, ctx: commands.Context):
         await display_panel(ctx, "json/panel.json", "help")
-
 def setup(bot: commands.Bot):
     bot.add_cog(Help())

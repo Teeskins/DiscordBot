@@ -4,7 +4,7 @@
         "header" : "Command prefixes : `!t `\n",
         "fields" : {
             "Skin" : ["`find` <name: str>", "`load` <id: int>", "`random` <category: str>"],
-            "Role" : ["`role` <token: str>"],
+            "Role" : ["`login`", "`role` <token: str>"],
             "Admin" : ["`init`"]
         },
         "footer": ""

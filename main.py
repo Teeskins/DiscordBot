@@ -8,6 +8,7 @@ extensions: Tuple[str] = (
     "cogs.resolve",
     "cogs.download",
     "cogs.role",
+    "cogs.token",
     "cogs.help"
 )
 
