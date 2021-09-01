@@ -1,9 +1,6 @@
 from typing import *
 
-import discord
 from discord.ext import commands
-from dataclasses import dataclass
-
 from utils.utilities import display_panel
 
 class Help(commands.Cog):

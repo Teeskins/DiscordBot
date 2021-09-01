@@ -1,6 +1,6 @@
 from typing import *
 from discord.ext import commands
-import discord, asyncio, json
+import discord, json
 
 from utils.utilities import read_json
 
