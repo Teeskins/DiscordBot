@@ -30,3 +30,6 @@ async def display(ctx: object, data: dict, title: str) -> None:
     for k, v in data.items():
         embed.add_field(name=k, value=v)
     await ctx.send(embed=embed)
+
+# a: List[object]
+get_name: callable = lambda a: [x.name for x in a]

@@ -36,6 +36,7 @@ def group_list(arr: list, size: int) -> list:
 @dataclass
 class Page:
     """Structure used to store clients"""
+
     msg: commands.Context
     author_id: int
     data: List[List[str]]
@@ -44,6 +45,7 @@ class Page:
 
 class Pages:
     """Class that manage Page objects"""
+
     def __init__(self) -> None:
         self.pages: Dict[int, Page] = {}
     
