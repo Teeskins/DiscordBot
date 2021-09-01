@@ -27,7 +27,7 @@ def format_search(data: List[dict], *columns: List[str]) -> dict:
     ret: dict = {k: [] for k in columns}
     for x in columns:
         for d in data:
-            ret[x] += [d[x]]
+            ret[x] += [d[x]] if (len(str(d[x])) <= 10) else [f"{str(d[x])[:10]}..."]
     return (ret)
 
 def group_list(arr: list, size: int) -> list:
