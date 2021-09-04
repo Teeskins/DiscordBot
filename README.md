@@ -13,6 +13,6 @@ Copy `json/env_example.json` to `json/env.json` and replace values
 #### Docker
 
 ```bash
-docker build -t tw-renderer .
-docker run -it -v $PWD/public:/app/public tw-renderer
+docker build -t teeskins .
+docker run -it -v $PWD/public:/app/public teeskins
 ```
