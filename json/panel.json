@@ -7,10 +7,17 @@
                 "`find` <name: str>",
                 "`load` <id: int>",
                 "`random` <category: str>",
-                "`upload` <name: str> <type: str> <author: str>"
+                "`upload` <name: str> <type: str> <author: str>",
+                "`cancel`"
             ],
-            "Role" : ["`login`", "`role` <token: str>"],
-            "Admin" : ["`init`", "`clear` [amount: int]"]
+            "Role" : [
+                "`login`", 
+                "`role` <token: str>"
+            ],
+            "Admin" : [
+                "`init`", 
+                "`clear` [amount: int]"
+            ]
         },
         "footer": ""
     }

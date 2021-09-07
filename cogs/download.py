@@ -21,7 +21,7 @@ class Download(commands.Cog):
         if (not _id): return
         res: List[dict] = get_api(f"{ENV['api']}/api/asset", _id)
         if (not res):
-            return await bmessage(ctx, f"❌ cannot find assets with the id `{_id}`")
+            return await bmessage(ctx, f"❌ Cannot find assets with the id `{_id}`")
         
         tmp: str = res["name"] + ".png"
         r: object = requests.get(f"{ENV['api']}{res['path']}")

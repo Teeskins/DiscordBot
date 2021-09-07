@@ -33,7 +33,7 @@ class Roles(commands.Cog):
     
         res: List[dict] = get_api(f"{ENV['api']}/api/discord", token)
         if (not res):
-            return await bmessage(ctx, f"❌ cannot find the user with the token `{token}`")
+            return await bmessage(ctx, f"❌ Cannot find the user with the token `{token}`")
 
         for k in list(ROLE.keys())[::-1]:
             if (res["count_uploads"] >= ROLE[k]["value"] and k in get_name(ctx.guild.roles)):
