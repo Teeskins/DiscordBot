@@ -90,6 +90,9 @@ class Upload(commands.Cog):
         """Upload a an asset"""
         key: str = gen_key(ctx)
         if (not name or not _type or not author): return
+        if (isinstance(ctx.channel, discord.DMChannel)): return
+        if (ctx.channel.name != "upload"): return
+
         if (key in self.waiting.keys()):
             return await bmessage(ctx, "🔒 you already have an upload in progress", self.cancel_msg)
         
