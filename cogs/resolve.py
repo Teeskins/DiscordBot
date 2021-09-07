@@ -13,7 +13,7 @@ REACTION: json = read_json("json/reaction.json")
 
 def get_api(endpoint: str, value: str) -> List[dict]:
     r: object = requests.get(url=f"{endpoint}/{value}")
-    if (r.status_code != 200):
+    if (r.status_code != 200 or not r.text):
         return []
     return (r.json())
  
@@ -46,8 +46,9 @@ class Page:
 class Pages:
     """Class that manage Page objects"""
 
-    def __init__(self) -> None:
+    def __init__(self, _type: str) -> None:
         self.pages: Dict[int, Page] = {}
+        self._type: str = _type
     
     async def change_page(self, r_dst: object, msg_id: str, r_src: str, move: int, user: object):
         """Go to previous or next page"""
@@ -55,7 +56,7 @@ class Pages:
         if (not msg_id in list(self.pages.keys())): return
 
         obj: Page = self.pages[msg_id]
-        if (obj.author_id != user.id or obj._type != "resolve"): return
+        if (obj.author_id != user.id or obj._type != self._type): return
 
         # Check out of range
         if (obj.page + move < 0 or obj.page + move > len(obj.data) - 1):
@@ -81,7 +82,7 @@ class Resolve(commands.Cog, Pages):
     """It resolves names from the REST API and stores msgs"""
 
     def __init__(self, bot: commands.Bot):
-        Pages.__init__(self)
+        Pages.__init__(self, "resolve")
         self.bot = bot
 
     @commands.Cog.listener()

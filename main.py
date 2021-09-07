@@ -10,6 +10,7 @@ extensions: Tuple[str] = (
     "cogs.role",
     "cogs.token",
     "cogs.moderator",
+    "cogs.upload",
     "cogs.help"
 )
 

@@ -3,7 +3,12 @@
         "title" : "Command help",
         "header" : "Command prefixes : `!t `\n",
         "fields" : {
-            "Skin" : ["`find` <name: str>", "`load` <id: int>", "`random` <category: str>"],
+            "Asset" : [
+                "`find` <name: str>",
+                "`load` <id: int>",
+                "`random` <category: str>",
+                "`upload` <name: str> <type: str> <author: str>"
+            ],
             "Role" : ["`login`", "`role` <token: str>"],
             "Admin" : ["`init`", "`clear` [amount: int]"]
         },
