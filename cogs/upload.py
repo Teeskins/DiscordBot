@@ -80,9 +80,6 @@ class Upload(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: object):
-        #if (not isinstance(message.channel, discord.DMChannel)): 
-        #    if (message.channel.name == "channel_name"):
-        #         pass
         await self.asset_attach(message)
 
     @commands.command()

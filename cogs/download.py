@@ -37,8 +37,8 @@ class Download(commands.Cog):
         embed.set_thumbnail(url=res["uploaded_by"]["profile_photo_url"])
         await ctx.send(embed=embed)
         
-    @commands.command(aliases=["random"])
-    async def _random(self, ctx: commands.Context, category: str = None):
+    @commands.command()
+    async def random(self, ctx: commands.Context, category: str = None):
         """Displays a random asset"""
         if (not category): return
         res: List[dict] = get_api(f"{ENV['api']}/api/assets/{category}", 0)

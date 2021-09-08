@@ -10,13 +10,12 @@ extensions: Tuple[str] = (
     "cogs.role",
     "cogs.token",
     "cogs.moderator",
-    "cogs.upload",
-    "cogs.help"
+    "cogs.upload"
 )
 
 ENV: json = read_json("json/env.json")
-bot = commands.Bot(command_prefix = ['!t '])
-bot.remove_command("help")
+bot = commands.Bot(command_prefix = ['!t '], help_command=commands.MinimalHelpCommand())
+#bot.remove_command("help")
 
 @bot.event
 async def on_ready() -> None:

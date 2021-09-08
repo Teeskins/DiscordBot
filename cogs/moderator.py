@@ -8,7 +8,7 @@ from utils.utilities import read_json
 REACTION: json = read_json("json/reaction.json")
 
 class Moderator(commands.Cog):
-    """Commands for the moderators"""
+    """Commands for the administrators/moderators"""
 
     @commands.has_permissions(administrator=True)
     @commands.command()

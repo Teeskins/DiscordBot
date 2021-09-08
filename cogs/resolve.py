@@ -79,7 +79,7 @@ class Pages:
         await self.change_page(reaction, _id, REACTION["pages"]["next"], 1, user)
 
 class Resolve(commands.Cog, Pages):
-    """It resolves names from the REST API and stores msgs"""
+    """It resolves names <-> ids"""
 
     def __init__(self, bot: commands.Bot):
         Pages.__init__(self, "resolve")
