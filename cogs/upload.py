@@ -15,6 +15,7 @@ REACTION: json = read_json("json/reaction.json")
 class WaitingUpload:
     """Object of an user before he uploads an asset (only PNGs)"""
     ctx: commands.Context
+    bot_msg: commands.Context
     name: str
     _type: str
     author: str
@@ -72,9 +73,11 @@ class Upload(commands.Cog):
             name=obj.name, author=obj.author)):
             del self.waiting[key]
             await message.delete()
+            await obj.bot_msg.delete()
             return await bmessage(message.channel, "❌ Your asset has not been uploaded", "Your upload details has been reset")
 
         await message.delete()
+        await obj.bot_msg.delete()
         await bmessage(message.channel, f"<:logo:881279804635234405> Uploaded the {obj._type} `{obj.name}` by `{obj.author}`", message.author)
         del self.waiting[key]
 
@@ -93,8 +96,8 @@ class Upload(commands.Cog):
         if (key in self.waiting.keys()):
             return await bmessage(ctx, "🔒 you already have an upload in progress", self.cancel_msg)
         
-        self.waiting[key] = WaitingUpload(ctx, name, _type, author)
-        await bmessage(ctx, f"📌 Your next attachment in this channel will be considered your asset", self.cancel_msg)
+        msg: object = await bmessage(ctx, f"📌 Your next attachment in this channel will be considered your asset", self.cancel_msg)
+        self.waiting[key] = WaitingUpload(ctx, msg, name, _type, author)
 
     @commands.command()
     async def cancel(self, ctx: commands.Context):

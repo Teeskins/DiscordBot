@@ -9,11 +9,11 @@ def read_json(path: str) -> list:
 def get_date() -> str:
     return str(datetime.datetime.now())[:-7]
 
-async def bmessage(ctx: object, msg: str, footer: str = None) -> None:
+async def bmessage(ctx: object, msg: str, footer: str = None) -> object:
     embed: object = discord.Embed(color=0x000000, description=msg)
     if (footer):
         embed.set_footer(text=footer)
-    await ctx.send(embed=embed)
+    return await ctx.send(embed=embed)
 
 async def display(ctx: object, data: dict, title: str) -> None:
     embed = discord.Embed(title=title, color = 0x000000)
