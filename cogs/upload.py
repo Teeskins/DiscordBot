@@ -93,6 +93,7 @@ class Upload(commands.Cog):
         if (isinstance(ctx.channel, discord.DMChannel)): return
         if (ctx.channel.name != "upload"): return
 
+        await ctx.message.delete()
         if (key in self.waiting.keys()):
             return await bmessage(ctx, "🔒 you already have an upload in progress", self.cancel_msg)
         
