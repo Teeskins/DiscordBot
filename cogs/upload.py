@@ -87,7 +87,10 @@ class Upload(commands.Cog):
 
     @commands.command()
     async def upload(self, ctx: commands.Context, name: str = None, _type: str = None, author: str = None):
-        """Upload a an asset"""
+        """
+        Upload an asset
+        Allowed types: `skin` | `mapres` | `gameskin` | `emoticon` | `cursor` | `particle` | `font` | `gridTemplate`
+        """
         key: str = gen_key(ctx)
         if (not name or not _type or not author): return
         if (isinstance(ctx.channel, discord.DMChannel)): return
