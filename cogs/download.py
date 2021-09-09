@@ -33,7 +33,7 @@ class Download(commands.Cog):
 
         embed = discord.Embed(color=0x000000, title=res["name"])
         embed.set_image(url=f"{ENV['api']}{res['path']}")
-        embed.set_footer(text=f"Uploaded by {res['uploaded_by']['name']}")
+        embed.set_footer(text=f"Uploaded by {res['uploaded_by']['name']} and made by {res['author']}")
         embed.set_thumbnail(url=res["uploaded_by"]["profile_photo_url"])
         await ctx.send(embed=embed)
         
