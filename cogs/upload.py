@@ -89,7 +89,7 @@ class Upload(commands.Cog):
     async def upload(self, ctx: commands.Context, name: str = None, _type: str = None, author: str = None):
         """
         Upload an asset
-        Allowed types: `skin` | `mapres` | `gameskin` | `emoticon` | `cursor` | `particle` | `font` | `gridTemplate`
+        Allowed types: `skin` | `mapres` | `gameskin` | `emoticon` | `entity` | `cursor` | `particle` | `font` | `gridTemplate`
         """
         key: str = gen_key(ctx)
         if (not name or not _type or not author): return
