@@ -51,8 +51,8 @@ class Upload(commands.Cog):
     async def asset_attach(self, message: object) -> None:
         """It manages Discord attachments for assets"""
         attachs: object = message.attachments
-        key: str = gen_key(message)
         if (len(attachs) != 1): return
+        key: str = gen_key(message)
         if (message.author.bot or not key in self.waiting.keys()): return
         obj: WaitingUpload = self.waiting[key]
         if (not obj.ctx.channel.id == message.channel.id): return
@@ -90,6 +90,11 @@ class Upload(commands.Cog):
         """
         Upload an asset
         Allowed types: `skin` | `mapres` | `gameskin` | `emoticon` | `entity` | `cursor` | `particle` | `font` | `gridTemplate`
+        
+        example:
+                    `!t upload twinbop skin Nagi`
+                    If you want to use spaces :
+                        `!t upload "honk honk" mapres "Nagi01 {LAN}"`
         """
         key: str = gen_key(ctx)
         if (not name or not _type or not author): return
@@ -105,7 +110,7 @@ class Upload(commands.Cog):
 
     @commands.command()
     async def cancel(self, ctx: commands.Context):
-        """Cancel the upload in progress"""
+        """Cancel your upload in progress"""
         key: str = gen_key(ctx)
         if (not key in self.waiting.keys()): return
 

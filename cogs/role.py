@@ -27,7 +27,9 @@ class Roles(commands.Cog):
 
     @commands.command()
     async def role(self, ctx: commands.Context, token: str = None):
-        """Give role in function of upload_count"""
+        """Give role in function of your upload_count on skins.tw
+        Its recommended to run this command in a secure channel.
+        You can create one with the command `!t login`"""
         if (not token): return
         await ctx.message.delete()
     

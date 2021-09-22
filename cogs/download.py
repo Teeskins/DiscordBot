@@ -17,7 +17,10 @@ class Download(commands.Cog):
 
     @commands.command()
     async def load(self, ctx: commands.Context, _id: str = None):
-        """Displays an asset"""
+        """Displays an asset
+        
+        example:
+                    `!t load 1337`"""
         if (not _id): return
         res: List[dict] = get_api(f"{ENV['api']}/api/asset", _id)
         if (not res):
@@ -39,7 +42,13 @@ class Download(commands.Cog):
         
     @commands.command()
     async def random(self, ctx: commands.Context, category: str = None):
-        """Displays a random asset"""
+        """Displays a random asset
+        
+        Allowed categories: `skin` | `mapres` | `gameskin` | `emoticon` | `entity` | `cursor` | `particle` | `font` | `gridTemplate`
+        
+        example:
+                    `!t random skin`
+                    `!t random mapres`"""
         if (not category): return
         res: List[dict] = get_api(f"{ENV['api']}/api/assets/{category}", 0)
         if (not res):
