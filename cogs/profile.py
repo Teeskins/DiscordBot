@@ -124,8 +124,8 @@ class UserProfile(CardStyle):
             offsets.append(x)
 
         # Separator
-        self.draw.rounded_rectangle(((self.sub_margin - 10, separator_y), 
-        (self.size[0] - self.sub_margin + 10, separator_y + 1)), 0, fill=self.main_text_color)
+        self.draw.rectangle((self.sub_margin - 10, separator_y,
+        self.size[0] - self.sub_margin + 10, separator_y + 1), fill=self.main_text_color)
 
         # Categories details
         self.__draw_stats(separator_y + 10, offsets)
