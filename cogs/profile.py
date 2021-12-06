@@ -1,13 +1,12 @@
 from typing import *
 
-import discord, json, uuid, os
+import discord, json, uuid, os, random
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 
-from utils.utilities import bmessage, read_json, get_name
+from utils.utilities import bmessage, read_json
 from cogs.resolve import get_api
 
-ROLE: json = read_json("json/role.json")
 ENV: json = read_json("json/env.json")
 
 class CardStyle:
@@ -15,12 +14,12 @@ class CardStyle:
 
     font_path: str = "./data/fonts/font.ttf"
     img_path: str = "./data/img"
+    bg: str = "./data/profile_bg"
     margin: int = 10
     sub_margin: int = 30 + margin
     name_size: int = 20
     details_size: int = 15
-    bg_rect_color: Tuple = (0, 0, 0, 224)
-    user_rect_color: Tuple = (0, 0, 0, 48)
+    bg_rect_color: Tuple = (10, 10, 10, 224)
     user_text_color: Tuple = (217, 217, 217, 255)
     main_text_color: Tuple = (255, 255, 255, 255)
     name_rect: Tuple = (255, 255, 255, 50)
@@ -31,6 +30,26 @@ class CardStyle:
         "Downloads": 50,
         "Total": 50
         }
+
+def round_rectangle(size: Tuple[int, int], radius: int, *, color: Tuple) -> Image.Image:
+    width, height = size
+
+    radius = min(width, height, radius * 2)
+    width *= 2
+    height *= 2
+
+    corner = Image.new('RGBA', (radius, radius))
+    draw = ImageDraw.Draw(corner)
+    xy = (0, 0, radius * 2, radius * 2)
+    draw.pieslice(xy, 180, 270, fill=color)
+
+    rect = Image.new('RGBA', (width, height), color=color)
+    rect.paste(corner, (0, 0))
+    rect.paste(corner.rotate(90), (0, height - radius))
+    rect.paste(corner.rotate(180), (width - radius, height - radius))
+    rect.paste(corner.rotate(270), (width - radius, 0))
+
+    return rect.resize(size, resample=Image.LANCZOS, reducing_gap=1.0)
 
 class UserProfile(CardStyle):
     """Manage user profile, generate cards"""
@@ -49,14 +68,18 @@ class UserProfile(CardStyle):
         # Image objects
         self.text_w: int = len(self.username) * self.name_size // 2
         self.size: Tuple(int, int) = [(470, 190), (470, 420)][detailed]
-        self.img: Image = Image.new('RGBA', self.size, (127, 127, 127, 20))
+        self.img: Image = Image.new('RGBA', self.size, "white")
         self.draw: ImageDraw = ImageDraw.Draw(self.img)
 
     def __draw_background(self):
-        x1, y1 = self.margin, self.margin
-        x2, y2 = self.size[0] - self.margin, self.size[1] - self.margin
+        x, y = self.margin, self.margin
+        img_path: str = f"{self.bg}/{random.choice(os.listdir(self.bg))}"
+        bg: Image = Image.open(img_path)
 
-        self.draw.rounded_rectangle(((x1, y1), (x2, y2)), 10, fill=self.bg_rect_color)
+        self.img.paste(bg.resize(self.size))
+        w, h = self.size[0] - (self.margin * 2), self.size[1] - (self.margin * 2)
+        rr: Image = round_rectangle((w, h), 10, color=self.bg_rect_color)
+        self.img.alpha_composite(rr, dest=(x, y))
 
     def __draw_total(self, offsets: List[int]):
         font: object = ImageFont.truetype(self.font_path, size=self.name_size)
@@ -107,7 +130,7 @@ class UserProfile(CardStyle):
         # Categories details
         self.__draw_stats(separator_y + 10, offsets)
 
-    def __draw_rank(self, offset: int, y: int, category: str):
+    def __draw_rank(self, offset: int, y: int, category: str) -> int:
         font: object = ImageFont.truetype(self.font_path, size=self.name_size)
         rank_img: Image = Image.open(f"{self.img_path}/{category}.png")
         w, _ = rank_img.size
@@ -125,19 +148,20 @@ class UserProfile(CardStyle):
 
     def __draw_header(self):
         font: object = ImageFont.truetype(self.font_path, size=self.name_size)
-        x1, y1 = self.sub_margin, self.sub_margin - 5
-        x2, y2 = x1 + self.text_w + 20, int((y1 + self.name_size) * 1.4)
+        x, y = self.sub_margin, self.sub_margin - 5
+        w, h = self.text_w + 20, int(self.name_size * 2)
 
         # White rectangle
-        self.draw.rounded_rectangle(((x1, y1), (x2, y2)), 25, fill=self.name_rect)
+        rr: Image = round_rectangle((w, h), 25, color=self.name_rect)
+        self.img.alpha_composite(rr, dest=(x, y))
 
         # Username
-        text_x: int = x1 + ((x2 - x1 - self.text_w) // 2)
-        text_y: int = y1 + ((y2 - y1 - self.name_size) // 2)
+        text_x: int = x + ((w - self.text_w) // 2)
+        text_y: int = y + ((h - self.name_size) // 2)
         self.draw.text((text_x, text_y), self.username, font=font, fill=self.user_text_color)
 
         # Ranks
-        offset: int = self.__draw_rank(x2 + 15, text_y, "upload")
+        offset: int = self.__draw_rank(x + w + 15, text_y, "upload")
         self.__draw_rank(offset, text_y, "download")
         
     def process(self):

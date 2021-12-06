@@ -24,3 +24,4 @@ async def display(ctx: object, data: dict, title: str) -> None:
 
 # a: List[object]
 get_name: callable = lambda a: [x.name for x in a]
+
