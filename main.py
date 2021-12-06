@@ -10,7 +10,8 @@ extensions: Tuple[str] = (
     "cogs.role",
     "cogs.token",
     "cogs.moderator",
-    "cogs.upload"
+    "cogs.upload",
+    "cogs.profile"
 )
 
 ENV: json = read_json("json/env.json")

@@ -1,5 +1,3 @@
-# await guild.create_role(name="role name")
-
 from typing import *
 
 import discord, json

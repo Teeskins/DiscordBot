@@ -1,4 +1,4 @@
 requests
 pandas
-Pillow
+Pillow==8.2.0
 discord.py
