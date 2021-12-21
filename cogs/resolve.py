@@ -45,14 +45,12 @@ class Page:
     author_id: int
     data: List[List[str]]
     page: int
-    _type: str
 
 class Pages:
     """Class that manage Page objects"""
 
-    def __init__(self, _type: str) -> None:
+    def __init__(self) -> None:
         self.pages: Dict[int, Page] = {}
-        self._type: str = _type
     
     async def change_page(self, r_dst: object, msg_id: str, r_src: str, move: int, user: object):
         """Go to previous or next page"""
@@ -60,7 +58,7 @@ class Pages:
         if (not msg_id in list(self.pages.keys())): return
 
         obj: Page = self.pages[msg_id]
-        if (obj.author_id != user.id or obj._type != self._type): return
+        if (obj.author_id != user.id): return
 
         # Check out of range
         if (obj.page + move < 0 or obj.page + move > len(obj.data) - 1):
@@ -86,7 +84,7 @@ class Resolve(commands.Cog, Pages):
     """It resolves names <-> ids"""
 
     def __init__(self, bot: commands.Bot):
-        Pages.__init__(self, "resolve")
+        Pages.__init__(self)
         self.bot = bot
 
     @commands.Cog.listener()
@@ -117,7 +115,7 @@ class Resolve(commands.Cog, Pages):
             await msg.add_reaction(v)
         
         # Store a Page class for reactions
-        self.pages[msg.id] = Page(msg, ctx.author.id, pages, 0, "resolve")
+        self.pages[msg.id] = Page(msg, ctx.author.id, pages, 0)
         
 def setup(bot: commands.Bot):
     bot.add_cog(Resolve(bot))
