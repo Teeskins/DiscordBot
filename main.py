@@ -1,30 +1,35 @@
-from typing import *
-from discord.ext import commands
-import discord, json
+#!/usr/bin/env python3
 
-from utils.utilities import read_json
+from bot import Teeskins
+from configparser import ConfigParser
+import asyncio, logging, sys
 
-extensions: Tuple[str] = (
-    "cogs.resolve",
-    "cogs.download",
-    "cogs.role",
-    "cogs.token",
-    "cogs.moderator",
-    "cogs.upload",
-    "cogs.profile"
-)
+# Setup log system
+log = logging.getLogger()
+log.setLevel(logging.INFO)
 
-ENV: json = read_json("json/env.json")
-bot = commands.Bot(command_prefix = ['!t '], help_command=commands.MinimalHelpCommand())
+formatter = logging.Formatter("[%(asctime)s][%(levelname)s]: %(message)s", "%Y-%m-%d %H:%M:%S")
 
-@bot.event
-async def on_ready() -> None:
-    await bot.change_presence(activity=discord.Game(name="skins.tw"))
+# Logger for a file
+f = logging.FileHandler("logs/bot.log", "a", encoding="utf-8")
+f.setLevel(logging.INFO)
+f.setFormatter(formatter)
+log.addHandler(f)
 
-def load_extensions(bot: Any, extensions: List[str]) -> None:
-    for extension in extensions:
-        bot.load_extension(extension)
+# Logger for stdout
+screen = logging.StreamHandler(sys.stdout)
+screen.setLevel(logging.DEBUG)
+screen.setFormatter(formatter)
+log.addHandler(screen)
+
+# Get environment variables (config.ini)
+config = ConfigParser()
+config.read("config.ini")
+
+async def main() -> None:
+    bot = Teeskins()
+    await bot.start(config.get("DISCORD", "TOKEN"))
 
 if __name__ == "__main__":
-    load_extensions(bot, extensions)
-    bot.run(ENV["token"])
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

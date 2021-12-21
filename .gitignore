@@ -7,11 +7,14 @@ __pycache__
 # VSCode
 .vscode
 
-# env
-json/env.json
+# Env
+config.ini
 
-# tests
+# Tests
 tests
 
-# quick todo list
+# Quick todo list
 todo
+
+# logs
+logs/*

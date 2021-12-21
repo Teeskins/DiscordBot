@@ -1,13 +1,17 @@
+#!/usr/bin/env python3
+
 from typing import *
 
 import discord, json
 from discord.ext import commands
+from configparser import ConfigParser
 
 from utils.utilities import bmessage, read_json, get_name
 from cogs.resolve import get_api
 
 ROLE: json = read_json("json/role.json")
-ENV: json = read_json("json/env.json")
+config: ConfigParser = ConfigParser()
+config.read("config.ini")
 
 class Roles(commands.Cog):
     """Manage role add and update"""
@@ -31,7 +35,7 @@ class Roles(commands.Cog):
         if (not token): return
         await ctx.message.delete()
     
-        res: List[dict] = get_api(f"{ENV['api']}/api/discord", token)
+        res: List[dict] = get_api(f"{config.get('API', 'HOST')}/api/discord", token)
         if (not res):
             return await bmessage(ctx, f"❌ Cannot find the user with the token `{token}`")
 

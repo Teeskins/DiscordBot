@@ -1,13 +1,17 @@
+#!/usr/bin/env python3
+
 from typing import *
 
 import discord, json, uuid, os, random
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
+from configparser import ConfigParser
 
-from utils.utilities import bmessage, read_json
+from utils.utilities import bmessage
 from cogs.resolve import get_api
 
-ENV: json = read_json("json/env.json")
+config: ConfigParser = ConfigParser()
+config.read("config.ini")
 
 class CardStyle:
     """Style information for the card image"""
@@ -59,7 +63,7 @@ class UserProfile(CardStyle):
         self.username: str = [f"{name[:20]}...", name][len(name) <= 20] 
         self.detailed: bool = detailed
         self.img_name: str = str(uuid.uuid1()) + ".png"
-        self.data: json = get_api(f"{ENV['api']}/api/profile", name)
+        self.data: json = get_api(f"{config.get('API', 'HOST')}/api/profile", name)
         self.valid: bool = not "error" in self.data.keys()
 
         if (not self.valid):

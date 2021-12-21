@@ -1,14 +1,18 @@
-from os import read
+#!/usr/bin/env python3
+
 from typing import *
 
 import discord, requests, json
 import pandas as pd
 from discord.ext import commands
 from dataclasses import dataclass
+from configparser import ConfigParser
 
 from utils.utilities import read_json, bmessage
 
-ENV: json = read_json("json/env.json")
+config: ConfigParser = ConfigParser()
+config.read("config.ini")
+
 REACTION: json = read_json("json/reaction.json")
 
 def get_api(endpoint: str, value: str) -> List[dict]:
@@ -96,7 +100,7 @@ class Resolve(commands.Cog, Pages):
     async def find(self, ctx: commands.Context, name: str = None):
         """Displays asset found with the keyword 'name'"""
         if (not name): return
-        res: List[dict] = get_api(f"{ENV['api']}/search", name)
+        res: List[dict] = get_api(f"{config.get('API', 'HOST')}/search", name)
         if (not res):
             return await bmessage(ctx, f"❌ cannot find assets with the name `{name}`")
 

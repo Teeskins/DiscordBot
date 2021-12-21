@@ -1,15 +1,18 @@
+#!/usr/bin/env python3
+
 from typing import *
 
 import json, hashlib, requests, discord
 from discord.ext import commands
-from PIL import Image
+from dataclasses import dataclass
+from configparser import ConfigParser
 
 from utils.utilities import bmessage, read_json
 from cogs.resolve import get_api
-from dataclasses import dataclass
 
-ENV: json = read_json("json/env.json")
 REACTION: json = read_json("json/reaction.json")
+config: ConfigParser = ConfigParser()
+config.read("config.ini")
 
 @dataclass
 class WaitingUpload:
@@ -64,11 +67,11 @@ class Upload(commands.Cog):
     
         # Check duplicate
         checksum: str = hashlib.md5(res.content).hexdigest()
-        duplicate: json = get_api(f"{ENV['api']}/checkDuplicate", checksum)
+        duplicate: json = get_api(f"{config.get('API', 'HOST')}/checkDuplicate", checksum)
         if (duplicate):
             return await bmessage(message.channel, f"❌ already exists ```id: {duplicate['id']}```", self.cancel_msg)
         
-        if (not post_asset(ENV["api"], "api/storeAsset/discord", 
+        if (not post_asset(config.get('API', 'HOST'), "api/storeAsset/discord", 
             file=res.content, type=obj._type, 
             name=obj.name, author=obj.author)):
             del self.waiting[key]
