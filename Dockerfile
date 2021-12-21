@@ -10,4 +10,4 @@ RUN pip3 install -r requirements.txt
 CMD ["python3", "main.py"]
 
 # docker build -t teeskins .
-# docker run -it -v $PWD/:/app/ teeskins
+# docker run -it -v $PWD/public:/app/public teeskins

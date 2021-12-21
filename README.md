@@ -6,9 +6,9 @@
 bash install.sh
 ```
 
-#### env
+#### Environment
 
-Copy `json/env_example.json` to `json/env.json` and replace values 
+Copy `config_example.ini` to `config.ini` and replace values 
 
 #### Docker
 
