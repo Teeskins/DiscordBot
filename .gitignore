@@ -17,4 +17,4 @@ tests
 todo
 
 # logs
-logs/*
+logs/*.log
