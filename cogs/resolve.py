@@ -13,7 +13,7 @@ from utils.utilities import read_json, bmessage
 config: ConfigParser = ConfigParser()
 config.read("config.ini")
 
-REACTION: json = read_json("json/reaction.json")
+REACTION: json = read_json("data/json/reaction.json")
 
 def get_api(endpoint: str, value: str) -> List[dict]:
     r: object = requests.get(url=f"{endpoint}/{value}")

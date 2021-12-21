@@ -10,7 +10,7 @@ from configparser import ConfigParser
 from utils.utilities import bmessage, read_json
 from cogs.resolve import get_api
 
-REACTION: json = read_json("json/reaction.json")
+REACTION: json = read_json("data/json/reaction.json")
 config: ConfigParser = ConfigParser()
 config.read("config.ini")
 

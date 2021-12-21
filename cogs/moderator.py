@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from utils.utilities import read_json
 
-REACTION: json = read_json("json/reaction.json")
+REACTION: json = read_json("data/json/reaction.json")
 
 class Moderator(commands.Cog):
     """Commands for the administrators/moderators"""

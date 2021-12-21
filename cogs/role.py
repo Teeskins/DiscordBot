@@ -9,7 +9,7 @@ from configparser import ConfigParser
 from utils.utilities import bmessage, read_json, get_name
 from cogs.resolve import get_api
 
-ROLE: json = read_json("json/role.json")
+ROLE: json = read_json("data/json/role.json")
 config: ConfigParser = ConfigParser()
 config.read("config.ini")
 
