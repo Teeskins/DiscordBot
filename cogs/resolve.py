@@ -47,38 +47,83 @@ class Page:
     page: int
 
 class Pages:
-    """Class that manage Page objects"""
+    """Manage Page objects"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.pages: Dict[int, Page] = {}
     
-    async def change_page(self, r_dst: object, msg_id: str, r_src: str, move: int, user: object):
-        """Go to previous or next page"""
-        if (str(r_dst) != r_src): return
-        if (not msg_id in list(self.pages.keys())): return
+    def __add_page(self, msg: discord.Message, author_id: str, pages: List[List[str]]):
+        """Add a page to self.pages"""
+
+        self.pages[msg.id] = Page(msg, author_id, pages, 0)
+
+    async def send_first_page(self, ctx: commands.Context, pages: List[List[str]]):
+        """Create and send the first page"""
+
+        embed = discord.Embed(
+            color       = 0x000000,
+            description = "```" + '\n'.join(pages[0]) + "```"
+        )
+        embed.set_footer(text=f"page 1 / {len(pages)}")
+
+        msg = await ctx.send(embed=embed)
+        for _, v in REACTION["pages"].items():
+            await msg.add_reaction(v)
+
+        self.__add_page(msg, ctx.author.id, pages)
+
+    def __get_obj(self, r_dst: object, msg_id: str, r_src: str, user: object) -> bool:
+        """If the user click on the right emoji + the message id exists,
+        then it will return the associated object"""
+
+        if (str(r_dst) != r_src):
+            return (None)
+
+        if (not msg_id in list(self.pages.keys())):
+            return (None)
 
         obj: Page = self.pages[msg_id]
-        if (obj.author_id != user.id): return
+        if (obj.author_id != user.id):
+            return (None)
 
-        # Check out of range
+        return (obj)
+
+    async def __change_page(self, r_dst: object, msg_id: str, r_src: str, move: int, user: object):
+        """Go to previous or next page"""
+
+        obj = self.__get_obj(r_dst, msg_id, r_src, user)
+        if (not obj):
+            return
+
         if (obj.page + move < 0 or obj.page + move > len(obj.data) - 1):
             return
 
-        # Change page
         obj.page += move
 
-        # Edit msg with fancy display
-        display: str = "```" + '\n'.join(obj.data[obj.page]) + "```"
+        display = "```" + '\n'.join(obj.data[obj.page]) + "```"
         embed = discord.Embed(color=0x000000, description=display)
         embed.set_footer(text=f"page {obj.page + 1} / {len(obj.data)}")
         await obj.msg.edit(embed=embed)
 
+    async def __delete(self, r_dst: object, msg_id: str, r_src: str, user: object):
+        """Delete the author message"""
+
+        obj = self.__get_obj(r_dst, msg_id, r_src, user)
+        if (not obj):
+            return
+        
+        await obj.msg.delete()
+        del self.pages[msg_id]
+
     async def check_for_pages(self, reaction: object, user: object):
-        """Check reactions for 'resolve'"""
-        _id: int = reaction.message.id
+        """Check reactions"""
+
+        _id = reaction.message.id
+        page = REACTION["pages"]
     
-        await self.change_page(reaction, _id, REACTION["pages"]["previous"], -1, user)
-        await self.change_page(reaction, _id, REACTION["pages"]["next"], 1, user)
+        await self.__change_page(reaction, _id, page["previous"], -1, user)
+        await self.__change_page(reaction, _id, page["next"], 1, user)
+        await self.__delete(reaction, _id, page["delete"], user)
 
 class Resolve(commands.Cog, Pages):
     """It resolves names <-> ids"""
@@ -91,8 +136,8 @@ class Resolve(commands.Cog, Pages):
     async def on_reaction_add(self, reaction: object, user: object):
         if (not reaction.message.author.bot or user.bot):
             return
-        await self.check_for_pages(reaction, user)
         await reaction.remove(user)
+        await self.check_for_pages(reaction, user)
 
     @commands.command()
     async def find(self, ctx: commands.Context, name: str = None):
@@ -104,18 +149,7 @@ class Resolve(commands.Cog, Pages):
 
         frame: str = pd.DataFrame(format_search(res, "id", "name", "type", "author")).to_string(index=False)
         pages: List[List[str]] = group_list(frame.split('\n'), 10)
-        embed: object = discord.Embed(
-            title       = name, 
-            color       = 0x000000, 
-            description = "```" + '\n'.join(pages[0]) + "```"
-        )
-        embed.set_footer(text=f"page 1 / {len(pages)}")
-        msg: object = await ctx.send(embed=embed)
-        for _, v in REACTION["pages"].items():
-            await msg.add_reaction(v)
-        
-        # Store a Page class for reactions
-        self.pages[msg.id] = Page(msg, ctx.author.id, pages, 0)
+        await self.send_first_page(ctx, pages)
         
 def setup(bot: commands.Bot):
     bot.add_cog(Resolve(bot))
