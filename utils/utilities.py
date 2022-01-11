@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json, datetime, discord
+import pandas as pd
 
 def read_json(path: str) -> list:
     f = open(path, "r")
@@ -19,3 +20,13 @@ async def bmessage(ctx: object, msg: str, footer: str = None) -> object:
 
 # a: List[object]
 get_name: callable = lambda a: [x.name for x in a]
+
+def bframe(data: dict) -> str:
+    """Return a basic frame (name, value)"""
+
+    data = data or {"--": "--"}
+    data = {
+        "Name": data.keys(),
+        "Value": data.values()
+    }
+    return (pd.DataFrame(data=data).to_string(index=False))

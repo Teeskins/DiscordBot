@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-from bot import Teeskins
+from bot import Bot
 from configparser import ConfigParser
 import asyncio, logging, sys
+
+from utils.utilities import *
 
 # Setup log system
 log = logging.getLogger()
@@ -18,7 +20,7 @@ log.addHandler(f)
 
 # Logger for stdout
 screen = logging.StreamHandler(sys.stdout)
-screen.setLevel(logging.DEBUG)
+screen.setLevel(logging.INFO)
 screen.setFormatter(formatter)
 log.addHandler(screen)
 
@@ -26,8 +28,8 @@ log.addHandler(screen)
 config = ConfigParser()
 config.read("config.ini")
 
-async def main() -> None:
-    bot = Teeskins()
+async def main():
+    bot = Bot()
     await bot.start(config.get("DISCORD", "TOKEN"))
 
 if __name__ == "__main__":
