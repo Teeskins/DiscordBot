@@ -2,3 +2,4 @@ requests
 pandas
 pillow
 discord.py
+mysql.connector

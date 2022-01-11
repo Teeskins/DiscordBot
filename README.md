@@ -1,18 +1,15 @@
-# Teeskins discord bot
+# `🌺 Teeskins Discord bot`
 
-#### How to install dependencies ?
+### Setup
 
-```bash
-bash install.sh
-```
+1. Install the dependencies 
+    - Run the bash script `install.sh` (Can request sudo)
+  
+2. Create the file `config.ini` in the repository source using the `config_example.ini`
+    - Insert a discord token
+    - Complete the database and the API fields
 
-#### Environment
+3. Import the SQL schema into a db engine, for MySQL:
+   - `mysql -u username -p database < data/schema.sql`
 
-Copy `config_example.ini` to `config.ini` and replace values 
-
-#### Docker
-
-```bash
-docker build -t teeskins .
-docker run -it -v $PWD/public:/app/public teeskins
-```
+4. Execute the file `main.py` with python3 (version <= `3.8`) to start the bot
