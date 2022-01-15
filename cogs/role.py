@@ -35,7 +35,7 @@ class Roles(commands.Cog):
         if (not token): return
         await ctx.message.delete()
     
-        res: List[dict] = get_api(f"{config.get('API', 'HOST')}/api/discord", token)
+        res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/api/discord", token)
         if (not res):
             return await bmessage(ctx, f"❌ Cannot find the user with the token `{token}`")
 

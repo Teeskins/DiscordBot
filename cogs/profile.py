@@ -63,7 +63,7 @@ class UserProfile(CardStyle):
         self.username: str = [f"{name[:20]}...", name][len(name) <= 20] 
         self.detailed: bool = detailed
         self.img_name: str = str(uuid.uuid1()) + ".png"
-        self.data: json = get_api(f"{config.get('API', 'HOST')}/api/profile", name)
+        self.data: json = get_api(f"{config.get('API', 'DATA_API')}/api/profile", name)
         self.valid: bool = not "error" in self.data.keys()
 
         if (not self.valid):

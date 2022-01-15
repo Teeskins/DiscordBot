@@ -58,7 +58,7 @@ class Resolve(commands.Cog, Pages):
     async def find(self, ctx: commands.Context, name: str = None):
         """Displays asset found with the keyword 'name'"""
         if (not name): return
-        res: List[dict] = get_api(f"{config.get('API', 'HOST')}/search", name)
+        res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/search", name)
         if (not res):
             return await bmessage(ctx, f"❌ cannot find assets with the name `{name}`")
 

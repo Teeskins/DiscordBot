@@ -7,7 +7,7 @@ from discord.ext import commands
 from dataclasses import dataclass
 from configparser import ConfigParser
 
-from utils.utilities import bmessage, read_json
+from utils.utilities import bmessage, read_json, gen_key, signature_check
 from cogs.resolve import get_api
 
 REACTION: json = read_json("data/json/reaction.json")
@@ -22,14 +22,6 @@ class WaitingUpload:
     name: str
     _type: str
     author: str
-
-def gen_key(ctx: commands.Context) -> str:
-    """Generate an unique key"""
-    return (str(ctx.guild.id) + str(ctx.author.id))
-
-def signature_check(data: bytes, sig: bytes) -> bool:
-    """Check file signature"""
-    return (data[:len(sig)] == sig)
 
 def post_asset(endpoint: str, value: str, **kwargs) -> bool:
     """POST an asset to the REST API"""
@@ -51,7 +43,7 @@ class Upload(commands.Cog):
     def __init__(self) -> None:
         self.waiting: Dict[str, WaitingUpload] = {}
 
-    async def asset_attach(self, message: object) -> None:
+    async def asset_attach(self, message: object):
         """It manages Discord attachments for assets"""
         attachs: object = message.attachments
         if (len(attachs) != 1): return
@@ -67,11 +59,12 @@ class Upload(commands.Cog):
     
         # Check duplicate
         checksum: str = hashlib.md5(res.content).hexdigest()
-        duplicate: json = get_api(f"{config.get('API', 'HOST')}/checkDuplicate", checksum)
+        duplicate: json = get_api(f"{config.get('API', 'DATA_API')}/checkDuplicate", checksum)
+
         if (duplicate):
             return await bmessage(message.channel, f"❌ already exists ```id: {duplicate['id']}```", self.cancel_msg)
         
-        if (not post_asset(config.get('API', 'HOST'), "api/storeAsset/discord", 
+        if (not post_asset(config.get('API', 'DATA_API'), "api/storeAsset/discord", 
             file=res.content, type=obj._type, 
             name=obj.name, author=obj.author)):
             del self.waiting[key]

@@ -137,6 +137,7 @@ class Log(commands.Cog, LogRequest):
 
     async def attachment_handler(self, msg: discord.Message, embed: discord.Embed):
         """If there is an attachment, it adds it to the embed"""
+
         file = None
 
         if not msg.attachments:

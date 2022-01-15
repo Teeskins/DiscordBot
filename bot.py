@@ -6,7 +6,6 @@ import discord, logging
 
 from cogs.sql import SQLCursor
 
-
 log: logging.Logger = logging.getLogger(__name__)
 
 extensions: Tuple[str] = (
@@ -17,6 +16,7 @@ extensions: Tuple[str] = (
     "cogs.moderator",
     "cogs.upload",
     "cogs.profile",
+    "cogs.renderer",
     "cogs.log"
 )
 

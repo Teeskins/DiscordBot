@@ -2,6 +2,7 @@
 
 import json, datetime, discord
 import pandas as pd
+from discord.ext import commands
 
 def read_json(path: str) -> list:
     f = open(path, "r")
@@ -30,3 +31,11 @@ def bframe(data: dict) -> str:
         "Value": data.values()
     }
     return (pd.DataFrame(data=data).to_string(index=False))
+
+def gen_key(ctx: commands.Context) -> str:
+    """Generate an unique key"""
+    return (str(ctx.guild.id) + str(ctx.author.id))
+
+def signature_check(data: bytes, sig: bytes) -> bool:
+    """Check file signature"""
+    return (data[:len(sig)] == sig)
