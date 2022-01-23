@@ -111,10 +111,10 @@ class Renderer(commands.Cog, Api):
         await self._send_render(ctx, data, self.render, res['name'])
     
     @commands.command(aliases=["rendercolor"])
-    async def rc(self, ctx: commands.Context, skin_id: str, bcolor: str=None, fcolor: str=None, mode: str=None, eye: str=None):
+    async def rc(self, ctx: commands.Context, skin_id: str=None, bcolor: str=None, fcolor: str=None, mode: str=None, eye: str=None):
         """Render a skin with color from skins.tw with an id"""
 
-        if (not bcolor or not fcolor or not mode):
+        if (not skin_id or not bcolor or not fcolor or not mode):
             return
 
         res, url = await self._get_skin_url(ctx, skin_id)
