@@ -57,8 +57,10 @@ class Renderer(commands.Cog, Api):
         res = call(data)
         url = data["skin"]
 
-        if (res.status_code != 200):
+        if (res.status_code == 500):
             await bmessage(message.channel, "❌ Error, invalid skin or invalid command format")
+        elif (res.status_code == 422):
+            return
         else:
             name = name or self._url_to_name(url)
             filename = self._save_tmp_img(res.content)
