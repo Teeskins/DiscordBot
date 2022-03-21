@@ -2,7 +2,7 @@
 
 from typing import *
 
-import discord, requests, os, random
+import discord, requests, os, random, json
 from discord.ext import commands
 from configparser import ConfigParser
 
@@ -24,7 +24,8 @@ class Download(commands.Cog):
         
         example:
                     `!t load 1337`"""
-        if (not _id): return
+        if (not _id):
+            return
         res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/api/asset", _id)
         if (not res):
             return await bmessage(ctx, f"❌ Cannot find assets with the id `{_id}`")
@@ -52,11 +53,12 @@ class Download(commands.Cog):
         example:
                     `!t random skin`
                     `!t random mapres`"""
-        if (not category): return
-        res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/api/assets/{category}", 0)
+        if (not category):
+            return
+        res: json = get_api(f"{config.get('API', 'DATA_API')}/api/random", category)
         if (not res):
             return await bmessage(ctx, f"❌ category `{category}` doesn't exist")
-        await self.load(ctx, random.choice(res)["id"])
+        await self.load(ctx, res["id"])
 
 def setup(bot: commands.Bot):
     bot.add_cog(Download(bot))

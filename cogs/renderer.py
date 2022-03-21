@@ -78,8 +78,8 @@ class Renderer(commands.Cog, Api):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        # if (message.channel.name != "skin-rendering"):
-        #     return
+        if (message.channel.name != "skin-rendering"):
+            return
         await self._upload_manager(message)
 
     async def _get_skin_url(self, ctx: commands.Context, skin_id: str) -> Any:
