@@ -1,0 +1,56 @@
+version: "3.5"
+
+services:
+  # MariaDB for the Discord bot
+  teeskins_db:
+    image: mariadb:latest
+    container_name: teeskins_db
+    restart: always
+    volumes:
+      - ./sql/:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+  
+    environment:
+      MYSQL_DATABASE: my_database
+      MYSQL_ROOT_PASSWORD: examplePassword123
+
+  # tw-utils REST API
+  twutils_api:
+    image: node:16.11.1
+    container_name: twutils_api
+    volumes:
+      - ./tw-utils-api:/rest_api
+    working_dir: /rest_api
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+    - |
+      npm i
+      npm run serve
+    environment:
+      PORT: ${TW_UTILS_PORT}
+
+  # Discord bot
+  teeskin_bot:
+    image: python:3.8
+    container_name: teeskin_bot
+    volumes:
+      - ./:/app
+    working_dir: /app
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+    - |
+      pip install -r /app/requirements.txt
+      python /app/main.py
+
+    environment:
+      DATABASE_HOST: teeskins_db
+      DATABASE_USER: root
+      DATABASE_PASSWORD: examplePassword123
+      DATABASE_DB_NAME: my_database
+
+      TW_UTILS_HOST: http://twutils_api
+      TW_UTILS_PORT: ${TW_UTILS_PORT}
+      
+    depends_on:
+      - twutils_api
+      - teeskins_db

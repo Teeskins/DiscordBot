@@ -1,64 +1,92 @@
-#!/usr/bin/env python3
+"""download cog"""
 
-from typing import *
+import discord
+import requests
+import os
 
-import discord, requests, os, random, json
 from discord.ext import commands
-from configparser import ConfigParser
 
-from cogs.resolve import get_api
-from utils.utilities import bmessage
+from utils.config import DockerConfig
+from cogs.apis.teeskins import TeeskinsAPI
+from utils.utilities import basic_message
 
-config: ConfigParser = ConfigParser()
-config.read("config.ini")
+config = DockerConfig("config.ini")
 
 class Download(commands.Cog):
-    """It manages download"""
-
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    """
+        It manages download
+    """
 
     @commands.command()
     async def load(self, ctx: commands.Context, _id: str = None):
-        """Displays an asset
+        """
+            Displays an asset
         
-        example:
-                    `!t load 1337`"""
-        if (not _id):
+            Example:
+                `!t load 1337`
+        """
+
+        if not _id:
             return
-        res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/api/asset", _id)
-        if (not res):
-            return await bmessage(ctx, f"❌ Cannot find assets with the id `{_id}`")
+
+        asset = TeeskinsAPI.asset(_id)
+
+        if not asset:
+            return await basic_message(
+                ctx,
+                f"❌ Cannot find assets with the id `{_id}`"
+            )
         
-        tmp: str = res["name"] + ".png"
-        r: object = requests.get(f"{config.get('API', 'DATA_API')}{res['path']}")
+        tmp = asset["name"] + ".png"
+        url = TeeskinsAPI.HOST + asset["path"]
+        img = requests.get(url)
 
-        if (res["type"] == "skin"):
-            open(tmp, "wb").write(r.content)
+        if (asset["type"] == "skin"):
+            open(tmp, "wb").write(img.content)
             await ctx.send(file=discord.File(tmp))
-            return (os.remove(tmp))
+            return os.remove(tmp)
 
-        embed = discord.Embed(color=0x000000, title=res["name"])
-        embed.set_image(url=f"{config.get('API', 'DATA_API')}{res['path']}")
-        embed.set_footer(text=f"Uploaded by {res['uploaded_by']['name']} and made by {res['author']}")
-        embed.set_thumbnail(url=res["uploaded_by"]["profile_photo_url"])
+        embed = discord.Embed(color=0x000000, title=asset["name"])
+
+        embed.set_image(url=url)
+        embed.set_footer(text=f"Uploaded by {asset['uploaded_by']['name']} and made by {asset['author']}")
+        embed.set_thumbnail(url=asset["uploaded_by"]["profile_photo_url"])
+
         await ctx.send(embed=embed)
         
     @commands.command()
     async def random(self, ctx: commands.Context, category: str = None):
-        """Displays a random asset
+        """
+            Displays a random asset
         
-        Allowed categories: `skin` | `mapres` | `gameskin` | `emoticon` | `entity` | `cursor` | `particle` | `font` | `gridTemplate`
+            Allowed categories:
+                `skin`
+                `mapres`
+                `gameskin`
+                `emoticon`
+                `entity`
+                `cursor`
+                `particle`
+                `font`
+                `gridTemplate`
         
-        example:
-                    `!t random skin`
-                    `!t random mapres`"""
-        if (not category):
+            Examples:
+                `!t random skin`
+                `!t random mapres`
+        """
+
+        if not category:
             return
-        res: json = get_api(f"{config.get('API', 'DATA_API')}/api/random", category)
-        if (not res):
-            return await bmessage(ctx, f"❌ category `{category}` doesn't exist")
-        await self.load(ctx, res["id"])
+    
+        res = TeeskinsAPI.random_asset(category)
+
+        if not res:
+            return await basic_message(
+                ctx,
+                f"❌ category `{category}` doesn't exist"
+            )
+
+        await self.load(ctx, str(res["id"]))
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Download(bot))
+    bot.add_cog(Download())

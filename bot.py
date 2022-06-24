@@ -1,45 +1,47 @@
-#!/usr/bin/env python3
+"""Overriding commands.Bot"""
 
-from typing import *
-from configparser import ConfigParser
-from discord.ext import commands
 import discord, logging
 
-from cogs.sql import SQLCursor
+from typing import *
+from discord.ext import commands
 
-log: logging.Logger = logging.getLogger(__name__)
-config = ConfigParser()
-config.read("config.ini")
+from utils.database import CursorDB
+from utils.config import DockerConfig
 
-extensions: Tuple[str] = (
+log = logging.getLogger(__name__)
+config = DockerConfig("config.ini")
+
+EXTENSIONS = (
     "cogs.resolve",
     "cogs.download",
     "cogs.role",
     "cogs.token",
-    "cogs.moderator",
+    # "cogs.moderator",
     "cogs.upload",
-    "cogs.profile",
+    # "cogs.profile",
     "cogs.renderer",
-    "cogs.log"
+    # "cogs.log"
 )
 
 commands.MinimalHelpCommand()
-class Bot(commands.Bot, SQLCursor):
-    """Pirmary class that contains the bot object to run"""
+class Bot(commands.Bot, CursorDB):
+    """
+        Primary class that contains the bot object to run
+    """
 
     def __init__(self):
         self.bot_options = {}
 
         self._get_options()
         super().__init__(**self.bot_options)
-        SQLCursor.__init__(self)
+        CursorDB.__init__(self)
 
-        for extension in extensions:
-            try:
-                self.load_extension(extension)
-                log.info(f"Loaded the extension {extension}")
-            except:
-                log.warning(f"Failed to load the extension {extension}")
+        for extension in EXTENSIONS:
+            # try:
+            self.load_extension(extension)
+            log.info(f"Loaded the extension {extension}")
+            # except:
+                # log.warning(f"Failed to load the extension {extension}")
 
     def _get_options(self):
         for k, v in config.items("BOT"):

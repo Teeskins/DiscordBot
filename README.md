@@ -1,15 +1,33 @@
-# `🌺 Teeskins Discord bot`
+# Teeskins Discord bot
 
-### Setup
+
+## How to build and run ?
 
 1. Install the dependencies 
-    - Run the bash script `install.sh` (Can request sudo)
-  
-2. Create the file `config.ini` in the repository source using the `config_example.ini`
+- Python3
+- MariaDB
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+1. Create the file `config.ini` in the repository source using the `config_example.ini`
     - Insert a discord token
-    - Complete the database and the API fields
+    - Complete the database fields
 
-3. Import the SQL schema into a db engine, for MySQL:
-   - `mysql -u username -p database < data/schema.sql`
+2. Import the SQL schema into a db engine, for MariaDB:
+   - `mariadb -u username -p database_name < sql/scheme.sql`
 
-4. Execute the file `main.py` with python3 (version <= `3.8`) to start the bot
+3. Execute the file `main.py` with python3 (version <= `3.8`) to start the bot
+
+## Docker
+
+```bash
+TW_UTILS_PORT=3000 docker-compose up
+```
+
+or
+
+```bash
+TW_UTILS_PORT=3000 docker-compose up -d
+```

@@ -1,59 +1,114 @@
-#!/usr/bin/env python3
+"""roles cog"""
 
-from typing import *
+import discord
 
-import discord, json
 from discord.ext import commands
-from configparser import ConfigParser
 
-from utils.utilities import bmessage, read_json, get_name
-from cogs.resolve import get_api
+from utils.utilities import basic_message
+from utils.config import DockerConfig
+from cogs.apis.teeskins import TeeskinsAPI
 
-ROLE: json = read_json("data/json/role.json")
-config: ConfigParser = ConfigParser()
-config.read("config.ini")
+config = DockerConfig("config.ini")
+
+ROLES = {
+    "Contributor": {
+        "value": 1,
+        "color": 0xffcdb2
+    },
+    "Supporter": {
+        "value": 10,
+        "color": 0xffb4a2
+    },
+    "Legend": {
+        "value": 50,
+        "color": 0xe5989b
+    },
+    "Master": {
+        "value": 100,
+        "color": 0xb5838d
+    }
+}
 
 class Roles(commands.Cog):
-    """Manage role add and update"""
+    """
+        This class manages the Teeskins roles
+    """
 
     @commands.has_permissions(administrator=True)
     @commands.command()
-    async def init(self, ctx: commands.Context):
-        """Creates role if needed"""
-        roles_names: List[str] = [a.name for a in ctx.guild.roles]
-        if (all(x in roles_names for x in ROLE.keys())):
-            return await bmessage(ctx, "❌ Roles have already been created")
-        for k in ROLE.keys():
-            await ctx.guild.create_role(name=k)
-        await bmessage(ctx, "✅ Roles have been created")
+    async def init_roles(self, ctx: commands.Context):
+        """
+            Creates roles if needed
+        """
+
+        names = [role.name for role in ctx.guild.roles]
+
+        if all(x in names for x in ROLES.keys()):
+            return await basic_message(
+                ctx,
+                "❌ Roles have already been created"
+            )
+
+        for k, v in ROLES.items():
+            colour = discord.Colour(v["color"])
+            await ctx.guild.create_role(name=k, colour=colour)
+
+        await basic_message(ctx, "✅ Roles have been created")
 
     @commands.command()
     async def role(self, ctx: commands.Context, token: str = None):
-        """Give role in function of your upload_count on skins.tw
-        Its recommended to run this command in a secure channel.
-        You can create one with the command `!t login`"""
-        if (not token): return
+        """
+            Give role in function of your upload_count on skins.tw
+            Its recommended to run this command in a secure channel.
+            You can create one with the command `!t login`
+        """
+
+        if not token:
+            return
+
         await ctx.message.delete()
-    
-        res: List[dict] = get_api(f"{config.get('API', 'DATA_API')}/api/discord", token)
-        if (not res):
-            return await bmessage(ctx, f"❌ Cannot find the user with the token `{token}`")
 
-        for k in list(ROLE.keys())[::-1]:
-            if (res["count_uploads"] >= ROLE[k]["value"] and k in get_name(ctx.guild.roles)):
+        res = TeeskinsAPI.user_role(token)
 
-                # Check if ctx.author has already updated his roles
-                if (k in get_name(ctx.author.roles)):
-                    return await bmessage(ctx, "❌ Your roles are already updated")
-    
-                # Remove ctx.author roles in role.json
-                for role in list(ROLE.keys()):
-                    await ctx.message.author.remove_roles(discord.utils.get(ctx.guild.roles, name = role))
+        if not res:
+            return await basic_message(
+                ctx,
+                f"❌ Cannot find the user with the token `{token}`"
+            )
 
-                # Apply role to ctx.author
-                await bmessage(ctx, f"🔓 You have unlocked the role `{k}`")
-                return await ctx.message.author.add_roles(discord.utils.get(ctx.guild.roles, name = k))
-        await bmessage(ctx, "❌ You have uploaded 0 assets in the database", "You can upload them to skins.tw")
+        guild_role_names = [x.name for x in ctx.guild.roles]
+        author_role_names = [x.name for x in ctx.author.roles]
+
+        for k in list(ROLES.keys())[::-1]:
+            if res["count_uploads"] < ROLES[k]["value"] and not k in guild_role_names:
+                continue
+
+            # Check if ctx.author has already updated his roles
+            if k in author_role_names:
+                return await basic_message(
+                    ctx,
+                    "❌ Your roles are already updated"
+                )
+
+            # Remove ctx.author roles in role.json
+            for name in ROLES.keys():
+                role = discord.utils.get(ctx.guild.roles, name=name)
+                await ctx.message.author.remove_roles(role)
+
+            role = discord.utils.get(ctx.guild.roles, name=k)
+
+            # Apply role to ctx.author
+            await basic_message(
+                ctx,
+                f"🔓 You have unlocked the role `{k}`"
+            )
+            return await ctx.message.author.add_roles(role)
+
+        await basic_message(
+            ctx,
+            "❌ You have uploaded 0 assets in the database",
+            "You can upload them to skins.tw"
+        )
 
 def setup(bot: commands.Bot):
     bot.add_cog(Roles())
