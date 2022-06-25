@@ -1,6 +1,7 @@
 """Overriding commands.Bot"""
 
-import discord, logging
+import discord
+import logging
 
 from typing import *
 from discord.ext import commands

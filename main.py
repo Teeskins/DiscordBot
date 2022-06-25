@@ -1,8 +1,11 @@
-#!/usr/bin/env python3
+"""main module"""
+
+import asyncio
+import logging
+import sys
 
 from bot import Bot
 from configparser import ConfigParser
-import asyncio, logging, sys
 
 from utils.utilities import *
 

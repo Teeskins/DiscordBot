@@ -1,6 +1,5 @@
 # Teeskins Discord bot
 
-
 ## How to build and run ?
 
 1. Install the dependencies 
@@ -22,12 +21,14 @@ python3 -m pip install -r requirements.txt
 
 ## Docker
 
+To download the submodules
 ```bash
-TW_UTILS_PORT=3000 docker-compose up
+git submodule init
+git submodule update
 ```
 
-or
+Launch containers
 
 ```bash
-TW_UTILS_PORT=3000 docker-compose up -d
+TW_UTILS_PORT=3000 docker-compose up
 ```
