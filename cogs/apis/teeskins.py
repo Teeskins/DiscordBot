@@ -2,9 +2,8 @@
 
 import requests
 
-from fake_useragent import UserAgent
 from utils.config import DockerConfig
-from typing import Union, Dict
+from typing import Union
 
 config = DockerConfig("config.ini")
 
@@ -102,7 +101,7 @@ class TeeskinsAPI:
             },
             data=data,
             headers={ 
-                "User-Agent": UserAgent().random,
+                "User-Agent": "Mozilla/5.0",
                 "Accept": "application/json"
             }
         )

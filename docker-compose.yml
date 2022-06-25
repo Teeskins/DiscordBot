@@ -40,7 +40,7 @@ services:
     command:
     - |
       pip install -r /app/requirements.txt
-      python /app/main.py
+      PYTHONUNBUFFERED=1 python /app/main.py
 
     environment:
       DATABASE_HOST: teeskins_db
@@ -52,5 +52,5 @@ services:
       TW_UTILS_PORT: ${TW_UTILS_PORT}
       
     depends_on:
-      - twutils_api
       - teeskins_db
+      - twutils_api

@@ -18,8 +18,8 @@ EXTENSIONS = (
     "cogs.token",
     # "cogs.moderator",
     "cogs.upload",
-    # "cogs.profile",
     "cogs.renderer",
+    "cogs.scene",
     # "cogs.log"
 )
 

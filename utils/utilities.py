@@ -1,11 +1,19 @@
 """utilities module"""
 
 import discord
+import os
 import pandas as pd
 
+from discord.ext import commands
 from typing import Tuple, Any
 
+from cogs.apis.teeskins import TeeskinsAPI
+
 async def basic_message(ctx: object, msg: str, footer: str = None) -> object:
+    """
+        Sending a simple message    
+    """
+    
     embed: object = discord.Embed(color=0x000000, description=msg)
 
     if footer:
@@ -55,3 +63,47 @@ def make_groups(arr: Any, size: int) -> list:
     """
 
     return [arr[i:i + size] for i in range(0, len(arr), size)]
+
+async def send_img(
+    message: discord.Message,
+    name: str,
+    filename: str,
+    url: str=None
+    ):
+    """
+        Saving a temp image and send it to a Discord channel
+    """
+
+    kwargs = {
+        "title": name, 
+        "color": 0x000000
+    }
+
+    if url:
+        kwargs["url"] = url
+        
+    embed = discord.Embed(**kwargs)
+    file = discord.File(filename, filename=filename)
+
+    embed.set_image(url="attachment://" +filename)
+    await message.channel.send(embed=embed, file=file)
+
+    os.remove(filename)
+
+async def get_skin(ctx: commands.Context, skin_id: str) -> Any:
+    """
+        Returns JSON information and an url
+    """
+
+    res = TeeskinsAPI.asset(skin_id)
+    ret = None, None
+
+    if not res:
+        await basic_message(ctx, "❌ invalid id")
+    elif res["type"] != "skin":
+        await basic_message(ctx, "❌ this asset is not a skin")
+    else:
+        url = TeeskinsAPI.HOST + "/" + res["path"]
+        ret = res, url
+
+    return ret

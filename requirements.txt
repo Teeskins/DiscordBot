@@ -3,4 +3,3 @@ requests
 pandas
 pillow
 discord.py
-fake_useragent

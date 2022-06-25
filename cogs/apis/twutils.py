@@ -4,7 +4,7 @@ import requests
 import json
 
 from utils.config import DockerConfig
-from typing import Union
+from typing import Union, List
 
 config = DockerConfig("config.ini")
 
@@ -70,13 +70,28 @@ class TwUtilsAPI:
             data
         )
 
-    def change(data: json) -> Union[bytes, None]:
+    def scene(data: json) -> Union[bytes, None]:
         """
-            Returns a changed asset
+            Returns a Teeskins scene
         """
 
         return TwUtilsAPI.common_request(
             requests.get,
-            "/changer",
+            "/scene",
             data
         )
+    
+    def scene_list() -> Union[List[str], None]:
+        """
+            Returns a list of the available scenes
+        """
+
+        req = TwUtilsAPI.request(
+            requests.get,
+            url=TwUtilsAPI.HOST + "/sceneList"
+        )
+
+        if not req:
+            return None
+
+        return req.json()

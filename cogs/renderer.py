@@ -3,14 +3,12 @@
 import discord
 import json
 import uuid
-import os
 
 from discord.ext import commands
 from utils.config import DockerConfig
 from typing import Any
 
-from utils.utilities import basic_message
-from cogs.apis.teeskins import TeeskinsAPI
+from utils.utilities import basic_message, send_img, get_skin
 from cogs.apis.twutils import TwUtilsAPI
 
 config = DockerConfig("config.ini")
@@ -24,32 +22,6 @@ def url_to_name(url: str) -> str:
     name = name.split(".")[0]
 
     return name
-
-async def send_img(
-    message: discord.Message,
-    name: str,
-    filename: str,
-    url: str=None
-    ):
-    """
-        Saving a temp image and send it to a Discord channel
-    """
-
-    kwargs = {
-        "title": name, 
-        "color": 0x000000
-    }
-
-    if url:
-        kwargs["url"] = url
-        
-    embed = discord.Embed(**kwargs)
-    file = discord.File(filename, filename=filename)
-
-    embed.set_image(url="attachment://" +filename)
-    await message.channel.send(embed=embed, file=file)
-
-    os.remove(filename)
 
 async def send_render(
     message: discord.message,
@@ -76,24 +48,6 @@ async def send_render(
         f.write(img)
     
     await send_img(message, name, filename, url)
-
-async def get_skin(ctx: commands.Context, skin_id: str) -> Any:
-    """
-        Returns JSON information and an url
-    """
-
-    res = TeeskinsAPI.asset(skin_id)
-    ret = None, None
-
-    if not res:
-        await basic_message(ctx, "❌ invalid id")
-    elif res["type"] != "skin":
-        await basic_message(ctx, "❌ this asset is not a skin")
-    else:
-        url = TeeskinsAPI.HOST + "/" + res["path"]
-        ret = res, url
-
-    return ret
 
 class Renderer(commands.Cog):
     """
