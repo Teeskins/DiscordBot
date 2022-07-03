@@ -31,7 +31,7 @@ services:
 
   # Discord bot
   teeskin_bot:
-    image: python:3.8
+    image: python:3.9.6
     container_name: teeskin_bot
     volumes:
       - ./:/app

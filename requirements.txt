@@ -1,5 +1,5 @@
-mariadb
 requests
 pandas
 pillow
 discord.py
+mariadb==1.0.11
